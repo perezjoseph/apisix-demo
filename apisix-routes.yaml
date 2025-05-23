@@ -1,0 +1,80 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# If you want to use the Admin API directly in the standalone mode,
+# please remove the following comment.
+#
+apisix:
+  node_listen: 9080
+  enable_admin: true
+  enable_admin_cors: true
+  enable_debug: false
+  enable_dev_mode: false
+  enable_reuseport: true
+  enable_ipv6: true
+  enable_server_tokens: true
+  enable_control: true
+  control:
+    ip: "0.0.0.0"
+    port: 9090
+  router:
+    http: radixtree_uri
+    ssl: radixtree_sni
+  ssl:
+    enable: false
+    listen:
+      - port: 9443
+        enable_http2: true
+        enable_http3: false
+  admin_key:
+    - name: admin
+      key: edd1c9f034335f136f87ad84b625c8f1
+      role: admin
+  proxy_mode: http&stream
+  proxy_cache:
+    zones:
+      - name: disk_cache_one
+        memory_size: 50m
+        disk_size: 1G
+        disk_path: /tmp/disk_cache_one
+        cache_levels: 1:2
+      - name: disk_cache_two
+        memory_size: 50m
+        disk_size: 1G
+        disk_path: /tmp/disk_cache_two
+        cache_levels: 1:2
+  allow_admin:
+    - 127.0.0.0/24
+    - 0.0.0.0/0
+  port_admin: 9180
+  
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: yaml
+
+routes:
+  -
+    id: 1
+    uri: "/api/*"
+    upstream:
+      type: roundrobin
+      nodes:
+        "nodejs-app:3000": 1
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/api/(.*)", "/$1"]
+#END

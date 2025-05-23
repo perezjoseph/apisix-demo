@@ -1,0 +1,13 @@
+{
+    "name": "items-api",
+    "version": "1.0.0",
+    "description": "Simple items API",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "test": "curl -X GET http://localhost:3000/items"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}

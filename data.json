@@ -1,0 +1,28 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "name": "Laptop",
+            "category": "electronics",
+            "price": 999.99
+        },
+        {
+            "id": 2,
+            "name": "Smartphone",
+            "category": "electronics",
+            "price": 699.99
+        },
+        {
+            "id": 3,
+            "name": "Coffee Maker",
+            "category": "appliances",
+            "price": 79.99
+        },
+        {
+            "id": 4,
+            "name": "Running Shoes",
+            "category": "sports",
+            "price": 89.99
+        }
+    ]
+}

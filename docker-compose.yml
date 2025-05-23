@@ -1,0 +1,50 @@
+services:
+  nodejs-app:
+    build: 
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app.js:/app/app.js
+      - ./data.json:/app/data.json
+      - ./package.json:/app/package.json
+    networks:
+      - app-network
+
+  etcd:
+    image: bitnami/etcd:3.5.9
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - "2379:2379"
+    networks:
+      - app-network
+
+  apisix:
+    image: apache/apisix:3.8.0-debian
+    ports:
+      - "9080:9080"
+      - "9180:9180"
+    volumes:
+      - ./apisix-config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    depends_on:
+      - etcd
+      - nodejs-app
+    networks:
+      - app-network
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1-alpine
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
+    depends_on:
+      - etcd
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,45 @@
+apisix:
+  node_listen: 9080
+  enable_admin: true
+  enable_admin_cors: true
+  enable_debug: false
+  enable_dev_mode: false
+  enable_reuseport: true
+  enable_ipv6: true
+  enable_server_tokens: true
+  enable_control: true
+  control:
+    ip: "0.0.0.0"
+    port: 9090
+  router:
+    http: radixtree_uri
+    ssl: radixtree_sni
+  ssl:
+    enable: false
+    listen:
+      - port: 9443
+        enable_http2: true
+        enable_http3: false
+  admin_key:
+    - name: admin
+      key: edd1c9f034335f136f87ad84b625c8f1
+      role: admin
+  allow_admin:
+    - 127.0.0.0/24
+    - 0.0.0.0/0
+  port_admin: 9180
+  
+deployment:
+  admin:
+    allow_admin:
+      - 127.0.0.0/24
+      - 0.0.0.0/0
+    admin_key_required: false
+    admin_listen:
+      port: 9180
+      ip: 0.0.0.0
+  etcd:
+    host:
+      - "http://etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
